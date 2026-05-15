@@ -116,6 +116,15 @@ describe("rankPrintings", () => {
     const simplify: Preferences = { ...prefs, mode: "simplify" };
     expect(rankPrintings(printings, simplify)[0].setCode).toBe("PLAIN_EX");
   });
+
+  it("ranks Double Rare above Rare Holo (separate tiers, between IR and Rare Holo)", () => {
+    const printings = [
+      p({ rarity: "Rare Holo", setCode: "HOLO" }),
+      p({ rarity: "Double Rare", setCode: "DR" }),
+      p({ rarity: "Illustration Rare", setCode: "IR" }),
+    ];
+    expect(rankPrintings(printings, prefs).map((x) => x.setCode)).toEqual(["IR", "DR", "HOLO"]);
+  });
 });
 
 describe("pickUpgrade — per-mode locks", () => {
