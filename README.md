@@ -6,6 +6,16 @@ Mobile-first React app that upgrades the printings in a Pokémon TCG Live deckli
 
 Paste your decklist, get back the same deck with every card swapped to its blingiest legal printing. Per-card overrides, persistent preferences, share-link export. No sign-up, no backend, no ads.
 
+## Screenshots
+
+<p align="center">
+  <img src="public/screenshots/1-paste.png" alt="Paste screen — empty textarea with the expected TCG Live decklist format shown as placeholder" width="240" />
+  &nbsp;
+  <img src="public/screenshots/2-review.png" alt="Review screen — each card replaced by an illustration-rare or special-illustration-rare printing" width="240" />
+  &nbsp;
+  <img src="public/screenshots/3-picker.png" alt="Per-card picker — Meowth ex variants with the Special Illustration Rare selected" width="240" />
+</p>
+
 ## How it works
 
 1. Paste a decklist in standard TCG Live format.
