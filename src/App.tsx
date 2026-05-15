@@ -5,8 +5,16 @@ import ReviewScreen from "./ui/screens/ReviewScreen";
 import ExportScreen from "./ui/screens/ExportScreen";
 import SettingsScreen from "./ui/screens/SettingsScreen";
 import { decodeDeckFromHash } from "./export/shareUrl";
+import { trackPageView } from "./analytics/analytics";
 
 export type Screen = "paste" | "review" | "export" | "settings";
+
+const SCREEN_TITLES: Record<Screen, string> = {
+  paste: "Paste decklist",
+  review: "Review upgrades",
+  export: "Export deck",
+  settings: "Settings",
+};
 
 export default function App() {
   return (
@@ -29,6 +37,10 @@ function AppShell() {
       setScreen("review");
     }
   }, [setDeck]);
+
+  useEffect(() => {
+    trackPageView(`/${screen}`, `${SCREEN_TITLES[screen]} — Pokémon TCG Live Deck Blinger`);
+  }, [screen]);
 
   return (
     <main className="mx-auto max-w-md px-4 pb-24 pt-6">
