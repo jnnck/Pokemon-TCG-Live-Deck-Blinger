@@ -1,4 +1,4 @@
-# TCGL Deck Blinger
+# Pokémon TCG Live Deck Blinger
 
 **Live demo: [pokemon-tcg-live-deck-blinger.vercel.app](https://pokemon-tcg-live-deck-blinger.vercel.app/)**
 

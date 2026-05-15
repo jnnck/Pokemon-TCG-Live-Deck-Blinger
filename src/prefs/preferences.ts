@@ -1,6 +1,7 @@
 import { DEFAULT_PREFERENCES, type Preferences, type RarityTier } from "../types";
 
-const KEY = "tcgl-blinger:prefs";
+const KEY = "pokemon-tcg-live-deck-blinger:prefs";
+const LEGACY_KEY = "tcgl-blinger:prefs";
 
 function migrateRanking(raw: unknown): RarityTier[] {
   if (!Array.isArray(raw)) return DEFAULT_PREFERENCES.rarityRanking;
@@ -13,9 +14,21 @@ function migrateRanking(raw: unknown): RarityTier[] {
     .filter((t): t is RarityTier => t !== null && t.length > 0);
 }
 
+function readStoredPrefs(): string | null {
+  const current = localStorage.getItem(KEY);
+  if (current !== null) return current;
+  const legacy = localStorage.getItem(LEGACY_KEY);
+  if (legacy !== null) {
+    localStorage.setItem(KEY, legacy);
+    localStorage.removeItem(LEGACY_KEY);
+    return legacy;
+  }
+  return null;
+}
+
 export function loadPreferences(): Preferences {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = readStoredPrefs();
     if (!raw) return { ...DEFAULT_PREFERENCES };
     const parsed = JSON.parse(raw) as Partial<Preferences> & { rarityRanking?: unknown };
     const ranking = migrateRanking(parsed.rarityRanking);
