@@ -45,21 +45,23 @@ export interface Printing {
 
 export type LockMap = Record<string, { setCode: string; number: string }>;
 
+export type RarityTier = string[];
+
 export interface Preferences {
-  rarityRanking: string[];
+  rarityRanking: RarityTier[];
   tiebreaker: "newest" | "oldest";
   locks: LockMap;
 }
 
-export const DEFAULT_RARITY_RANKING: string[] = [
-  "Special Illustration Rare",
-  "Illustration Rare",
-  "Hyper Rare",
-  "Rare Ultra",
-  "Rare Holo",
-  "Rare",
-  "Uncommon",
-  "Common",
+export const DEFAULT_RARITY_RANKING: RarityTier[] = [
+  ["Hyper Rare", "Rare Secret"],
+  ["Ultra Rare", "Rare Ultra"],
+  ["Special Illustration Rare"],
+  ["Illustration Rare"],
+  ["Rare Holo"],
+  ["Rare"],
+  ["Uncommon"],
+  ["Common"],
 ];
 
 export const DEFAULT_PREFERENCES: Preferences = {

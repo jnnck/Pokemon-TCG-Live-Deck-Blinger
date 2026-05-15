@@ -1,6 +1,8 @@
+import type { RarityTier } from "../../types";
+
 interface Props {
-  ranking: string[];
-  onChange: (next: string[]) => void;
+  ranking: RarityTier[];
+  onChange: (next: RarityTier[]) => void;
 }
 
 export default function RarityRankingList({ ranking, onChange }: Props) {
@@ -14,9 +16,9 @@ export default function RarityRankingList({ ranking, onChange }: Props) {
 
   return (
     <ol className="space-y-2">
-      {ranking.map((rarity, i) => (
-        <li key={rarity} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
-          <span className="text-sm">{i + 1}. {rarity}</span>
+      {ranking.map((tier, i) => (
+        <li key={tier.join("/")} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
+          <span className="text-sm">{i + 1}. {tier.join(" / ")}</span>
           <span className="flex gap-2">
             <button
               onClick={() => move(i, -1)}

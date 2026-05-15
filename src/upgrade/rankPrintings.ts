@@ -1,4 +1,4 @@
-import type { Preferences, Printing } from "../types";
+import type { Preferences, Printing, RarityTier } from "../types";
 
 export function normalizeName(name: string): string {
   return name
@@ -9,9 +9,9 @@ export function normalizeName(name: string): string {
     .trim();
 }
 
-function rarityIndex(rarity: string | null, ranking: string[]): number {
+function rarityIndex(rarity: string | null, ranking: RarityTier[]): number {
   if (rarity === null) return ranking.length;
-  const idx = ranking.indexOf(rarity);
+  const idx = ranking.findIndex((tier) => tier.includes(rarity));
   return idx === -1 ? ranking.length : idx;
 }
 

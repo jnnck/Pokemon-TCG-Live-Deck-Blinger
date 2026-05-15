@@ -64,6 +64,23 @@ describe("rankPrintings", () => {
     ];
     expect(rankPrintings(printings, prefs).map((x) => x.setCode)).toEqual(["OK", "WEIRD"]);
   });
+
+  it("treats aliased rarities within a tier as equivalent (newest wins)", () => {
+    const printings = [
+      p({ rarity: "Rare Secret", setCode: "OLD", releaseDate: "2020/01/01" }),
+      p({ rarity: "Hyper Rare", setCode: "NEW", releaseDate: "2024/01/01" }),
+    ];
+    const ranked = rankPrintings(printings, prefs);
+    expect(ranked.map((x) => x.setCode)).toEqual(["NEW", "OLD"]);
+  });
+
+  it("ranks Hyper Rare / Rare Secret above Special Illustration Rare by default", () => {
+    const printings = [
+      p({ rarity: "Special Illustration Rare", setCode: "SIR" }),
+      p({ rarity: "Rare Secret", setCode: "GOLD" }),
+    ];
+    expect(rankPrintings(printings, prefs)[0].setCode).toBe("GOLD");
+  });
 });
 
 describe("pickUpgrade", () => {

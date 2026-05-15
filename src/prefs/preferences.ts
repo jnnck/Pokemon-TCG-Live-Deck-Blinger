@@ -1,14 +1,26 @@
-import { DEFAULT_PREFERENCES, type Preferences } from "../types";
+import { DEFAULT_PREFERENCES, type Preferences, type RarityTier } from "../types";
 
 const KEY = "tcgl-blinger:prefs";
+
+function migrateRanking(raw: unknown): RarityTier[] {
+  if (!Array.isArray(raw)) return DEFAULT_PREFERENCES.rarityRanking;
+  return raw
+    .map((tier): RarityTier | null => {
+      if (typeof tier === "string") return [tier];
+      if (Array.isArray(tier) && tier.every((s) => typeof s === "string")) return tier as RarityTier;
+      return null;
+    })
+    .filter((t): t is RarityTier => t !== null && t.length > 0);
+}
 
 export function loadPreferences(): Preferences {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return { ...DEFAULT_PREFERENCES };
-    const parsed = JSON.parse(raw) as Partial<Preferences>;
+    const parsed = JSON.parse(raw) as Partial<Preferences> & { rarityRanking?: unknown };
+    const ranking = migrateRanking(parsed.rarityRanking);
     return {
-      rarityRanking: Array.isArray(parsed.rarityRanking) ? parsed.rarityRanking : DEFAULT_PREFERENCES.rarityRanking,
+      rarityRanking: ranking.length > 0 ? ranking : DEFAULT_PREFERENCES.rarityRanking,
       tiebreaker: parsed.tiebreaker === "oldest" ? "oldest" : "newest",
       locks: parsed.locks && typeof parsed.locks === "object" ? parsed.locks : {},
     };
