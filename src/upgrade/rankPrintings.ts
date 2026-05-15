@@ -9,19 +9,25 @@ export function normalizeName(name: string): string {
     .trim();
 }
 
+const UNKNOWN_RARITY = Number.MAX_SAFE_INTEGER;
+
 function rarityIndex(rarity: string | null, ranking: RarityTier[]): number {
-  if (rarity === null) return ranking.length;
+  if (rarity === null) return UNKNOWN_RARITY;
   const idx = ranking.findIndex((tier) => tier.includes(rarity));
-  return idx === -1 ? ranking.length : idx;
+  return idx === -1 ? UNKNOWN_RARITY : idx;
 }
 
 export function rankPrintings(printings: Printing[], prefs: Preferences): Printing[] {
-  const dir = prefs.tiebreaker === "newest" ? -1 : 1;
+  const tieDir = prefs.tiebreaker === "newest" ? -1 : 1;
+  const rarityDir = prefs.mode === "simplify" ? -1 : 1;
   return [...printings].sort((a, b) => {
-    const rd =
-      rarityIndex(a.rarity, prefs.rarityRanking) - rarityIndex(b.rarity, prefs.rarityRanking);
+    const ai = rarityIndex(a.rarity, prefs.rarityRanking);
+    const bi = rarityIndex(b.rarity, prefs.rarityRanking);
+    if (ai === UNKNOWN_RARITY && bi !== UNKNOWN_RARITY) return 1;
+    if (bi === UNKNOWN_RARITY && ai !== UNKNOWN_RARITY) return -1;
+    const rd = (ai - bi) * rarityDir;
     if (rd !== 0) return rd;
-    return dir * a.releaseDate.localeCompare(b.releaseDate);
+    return tieDir * a.releaseDate.localeCompare(b.releaseDate);
   });
 }
 

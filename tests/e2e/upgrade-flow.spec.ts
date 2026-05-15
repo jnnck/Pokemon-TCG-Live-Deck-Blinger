@@ -12,7 +12,7 @@ Energy: 2
 test("paste → review → export round-trip", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("textbox").fill(SAMPLE_DECK);
-  await page.getByRole("button", { name: /upgrade deck/i }).click();
+  await page.getByRole("button", { name: /^(bling|simplify) deck$/i }).click();
 
   await expect(page.getByRole("heading", { name: "Review" })).toBeVisible();
   await expect(page.getByText(/Boss's Orders/)).toBeVisible();

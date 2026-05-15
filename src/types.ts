@@ -46,10 +46,12 @@ export interface Printing {
 export type LockMap = Record<string, { setCode: string; number: string }>;
 
 export type RarityTier = string[];
+export type Mode = "bling" | "simplify";
 
 export interface Preferences {
   rarityRanking: RarityTier[];
   tiebreaker: "newest" | "oldest";
+  mode: Mode;
   locks: LockMap;
 }
 
@@ -67,5 +69,6 @@ export const DEFAULT_RARITY_RANKING: RarityTier[] = [
 export const DEFAULT_PREFERENCES: Preferences = {
   rarityRanking: DEFAULT_RARITY_RANKING,
   tiebreaker: "newest",
+  mode: "bling",
   locks: {},
 };

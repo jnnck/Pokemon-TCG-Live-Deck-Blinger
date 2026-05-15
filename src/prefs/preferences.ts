@@ -35,6 +35,7 @@ export function loadPreferences(): Preferences {
     return {
       rarityRanking: ranking.length > 0 ? ranking : DEFAULT_PREFERENCES.rarityRanking,
       tiebreaker: parsed.tiebreaker === "oldest" ? "oldest" : "newest",
+      mode: parsed.mode === "simplify" ? "simplify" : "bling",
       locks: parsed.locks && typeof parsed.locks === "object" ? parsed.locks : {},
     };
   } catch {

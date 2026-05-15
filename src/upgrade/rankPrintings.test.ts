@@ -26,6 +26,7 @@ function p(partial: Partial<Printing>): Printing {
 const prefs: Preferences = {
   rarityRanking: DEFAULT_RARITY_RANKING,
   tiebreaker: "newest",
+  mode: "bling",
   locks: {},
 };
 
@@ -80,6 +81,31 @@ describe("rankPrintings", () => {
       p({ rarity: "Rare Secret", setCode: "GOLD" }),
     ];
     expect(rankPrintings(printings, prefs)[0].setCode).toBe("SIR");
+  });
+
+  it("in simplify mode, picks the plainest rarity but still the newest set", () => {
+    const printings = [
+      p({ rarity: "Special Illustration Rare", setCode: "SIR", releaseDate: "2025/01/01" }),
+      p({ rarity: "Common", setCode: "OLD_COMMON", releaseDate: "2020/01/01" }),
+      p({ rarity: "Common", setCode: "NEW_COMMON", releaseDate: "2024/01/01" }),
+      p({ rarity: "Rare Holo", setCode: "HOLO", releaseDate: "2023/01/01" }),
+    ];
+    const simplify: Preferences = { ...prefs, mode: "simplify" };
+    const ranked = rankPrintings(printings, simplify);
+    expect(ranked[0].setCode).toBe("NEW_COMMON");
+    expect(ranked.map((x) => x.setCode)).toEqual(["NEW_COMMON", "OLD_COMMON", "HOLO", "SIR"]);
+  });
+
+  it("keeps unknown rarities at the bottom in simplify mode (not promoted to top)", () => {
+    const printings = [
+      p({ rarity: "Cosmic Foil", setCode: "WEIRD" }),
+      p({ rarity: "Common", setCode: "OK" }),
+      p({ rarity: "Rare Holo", setCode: "HOLO" }),
+    ];
+    const simplify: Preferences = { ...prefs, mode: "simplify" };
+    const ranked = rankPrintings(printings, simplify);
+    expect(ranked[0].setCode).toBe("OK");
+    expect(ranked[ranked.length - 1].setCode).toBe("WEIRD");
   });
 });
 
