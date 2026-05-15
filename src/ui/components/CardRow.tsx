@@ -4,11 +4,12 @@ interface Props {
   entry: DeckEntry;
   upgraded: Printing | null;
   loading: boolean;
+  notFound: boolean;
   error: string | null;
   onClick: () => void;
 }
 
-export default function CardRow({ entry, upgraded, loading, error, onClick }: Props) {
+export default function CardRow({ entry, upgraded, loading, notFound, error, onClick }: Props) {
   return (
     <button
       onClick={onClick}
@@ -23,6 +24,7 @@ export default function CardRow({ entry, upgraded, loading, error, onClick }: Pr
         <div className="font-semibold">{entry.count}× {entry.name}</div>
         <div className="text-xs text-slate-500">From {entry.setCode} {entry.number}</div>
         {loading && <div className="text-xs text-slate-400">Looking up printings…</div>}
+        {notFound && <div className="text-xs text-amber-700">Not found — keeping original printing</div>}
         {error && <div className="text-xs text-red-600">{error}</div>}
         {upgraded && !loading && (
           <div className="text-xs text-emerald-700">

@@ -46,14 +46,17 @@ export default function ReviewScreen({ onBack, onExport }: Props) {
       <ul className="space-y-2">
         {uniqueEntries.map((entry) => {
           const key = normalizeName(entry.name);
-          const printings = state.printings[key] ?? [];
+          const printings = state.printings[key];
+          const error = state.errors[key] ?? null;
+          const loaded = printings !== undefined;
           return (
             <li key={key}>
               <CardRow
                 entry={entry}
                 upgraded={resolvedPrinting(entry)}
-                loading={printings.length === 0 && !state.errors[key]}
-                error={state.errors[key] ?? null}
+                loading={!loaded && !error}
+                notFound={loaded && printings.length === 0}
+                error={error}
                 onClick={() => setOpenCard(entry.name)}
               />
             </li>
