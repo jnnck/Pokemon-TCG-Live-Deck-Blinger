@@ -3,6 +3,7 @@ import { fetchPrintingsByName } from "../api/pokemonTcgApi";
 import { createPrintingCache } from "../cache/printingCache";
 import { loadPreferences, savePreferences } from "../prefs/preferences";
 import { normalizeName, pickUpgrade } from "../upgrade/rankPrintings";
+import { filterByFingerprint } from "../upgrade/fingerprint";
 import type { Deck, DeckEntry, Preferences, Printing } from "../types";
 
 type PrintingsByName = Record<string, Printing[]>;
@@ -64,6 +65,7 @@ interface ContextValue {
   clearSelection: (cardName: string) => void;
   updatePrefs: (next: Preferences) => void;
   resolvedPrinting: (entry: DeckEntry) => Printing | null;
+  printingsFor: (entry: DeckEntry) => Printing[];
 }
 
 const DeckContext = createContext<ContextValue | null>(null);
@@ -127,22 +129,32 @@ export function DeckProvider({ children }: { children: ReactNode }) {
     savePreferences(next);
   }, []);
 
+  const printingsFor = useCallback(
+    (entry: DeckEntry): Printing[] => {
+      const key = normalizeName(entry.name);
+      const all = state.printings[key] ?? [];
+      const reference = all.find((p) => p.setCode === entry.setCode && p.number === entry.number) ?? null;
+      return filterByFingerprint(reference, all);
+    },
+    [state.printings],
+  );
+
   const resolvedPrinting = useCallback(
     (entry: DeckEntry): Printing | null => {
       const key = normalizeName(entry.name);
       const explicit = state.selected[key];
-      const printings = state.printings[key] ?? [];
+      const printings = printingsFor(entry);
       if (explicit) {
         return printings.find((p) => p.setCode === explicit.setCode && p.number === explicit.number) ?? null;
       }
       return pickUpgrade(entry.name, printings, prefs);
     },
-    [state.printings, state.selected, prefs],
+    [state.selected, prefs, printingsFor],
   );
 
   const value = useMemo<ContextValue>(
-    () => ({ state, prefs, setDeck, selectPrinting, clearSelection, updatePrefs, resolvedPrinting }),
-    [state, prefs, setDeck, selectPrinting, clearSelection, updatePrefs, resolvedPrinting],
+    () => ({ state, prefs, setDeck, selectPrinting, clearSelection, updatePrefs, resolvedPrinting, printingsFor }),
+    [state, prefs, setDeck, selectPrinting, clearSelection, updatePrefs, resolvedPrinting, printingsFor],
   );
 
   return <DeckContext.Provider value={value}>{children}</DeckContext.Provider>;

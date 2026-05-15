@@ -15,6 +15,10 @@ function p(partial: Partial<Printing>): Printing {
     imageSmall: "",
     imageLarge: "",
     releaseDate: "2024/01/01",
+    hp: null,
+    subtypes: [],
+    attacks: [],
+    abilities: [],
     ...partial,
   };
 }

@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function ReviewScreen({ onBack, onExport }: Props) {
-  const { state, resolvedPrinting, selectPrinting, clearSelection } = useDeck();
+  const { state, resolvedPrinting, selectPrinting, clearSelection, printingsFor } = useDeck();
   const [openCard, setOpenCard] = useState<string | null>(null);
 
   const uniqueEntries = useMemo(() => {
@@ -72,8 +72,8 @@ export default function ReviewScreen({ onBack, onExport }: Props) {
 
       {openCard && (() => {
         const key = normalizeName(openCard);
-        const printings = state.printings[key] ?? [];
         const entry = deck.entries.find((e) => normalizeName(e.name) === key)!;
+        const printings = printingsFor(entry);
         const selected = resolvedPrinting(entry);
         return (
           <PrintingSheet

@@ -15,6 +15,7 @@ const sample: Printing[] = [
   {
     id: "x-1", name: "Test", setCode: "X", setName: "X", number: "1",
     rarity: "Rare", standardLegal: true, imageSmall: "", imageLarge: "", releaseDate: "2024/01/01",
+    hp: null, subtypes: [], attacks: [], abilities: [],
   },
 ];
 

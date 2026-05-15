@@ -13,6 +13,19 @@ export interface Deck {
   warnings: string[];
 }
 
+export interface Attack {
+  name: string;
+  cost: string[];
+  damage: string;
+  text: string;
+}
+
+export interface Ability {
+  name: string;
+  text: string;
+  type: string;
+}
+
 export interface Printing {
   id: string;
   name: string;
@@ -24,6 +37,10 @@ export interface Printing {
   imageSmall: string;
   imageLarge: string;
   releaseDate: string;
+  hp: string | null;
+  subtypes: string[];
+  attacks: Attack[];
+  abilities: Ability[];
 }
 
 export type LockMap = Record<string, { setCode: string; number: string }>;

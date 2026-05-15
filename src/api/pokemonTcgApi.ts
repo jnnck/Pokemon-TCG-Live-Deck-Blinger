@@ -1,10 +1,27 @@
 import type { Printing } from "../types";
 
+interface ApiAttack {
+  name: string;
+  cost?: string[];
+  damage?: string;
+  text?: string;
+}
+
+interface ApiAbility {
+  name: string;
+  text?: string;
+  type?: string;
+}
+
 interface ApiCard {
   id: string;
   name: string;
   number: string;
   rarity?: string;
+  hp?: string;
+  subtypes?: string[];
+  attacks?: ApiAttack[];
+  abilities?: ApiAbility[];
   set: {
     name: string;
     ptcgoCode?: string;
@@ -38,6 +55,19 @@ function toPrinting(card: ApiCard): Printing | null {
     imageSmall: card.images?.small ?? "",
     imageLarge: card.images?.large ?? card.images?.small ?? "",
     releaseDate: card.set.releaseDate,
+    hp: card.hp ?? null,
+    subtypes: card.subtypes ?? [],
+    attacks: (card.attacks ?? []).map((a) => ({
+      name: a.name,
+      cost: a.cost ?? [],
+      damage: a.damage ?? "",
+      text: a.text ?? "",
+    })),
+    abilities: (card.abilities ?? []).map((a) => ({
+      name: a.name,
+      text: a.text ?? "",
+      type: a.type ?? "",
+    })),
   };
 }
 
