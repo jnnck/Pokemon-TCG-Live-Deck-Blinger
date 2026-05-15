@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pokemon-tcg-live-deck-blinger.vercel.app/sitemap.xml
