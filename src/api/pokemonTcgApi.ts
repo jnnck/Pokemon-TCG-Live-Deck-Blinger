@@ -1,4 +1,5 @@
 import { normalizeName } from "../upgrade/rankPrintings";
+import { FALLBACK_PRINTINGS } from "./fallbackPrintings";
 import type { Printing } from "../types";
 
 interface ApiAttack {
@@ -82,7 +83,15 @@ export async function fetchPrintingsByName(
   if (!res.ok) throw new Error(`pokemontcg.io ${res.status}`);
   const body = (await res.json()) as ApiResponse;
   const target = normalizeName(name);
-  return body.data
+  const fromApi = body.data
     .map(toPrinting)
     .filter((p): p is Printing => p !== null && normalizeName(p.name) === target);
+
+  const fromFallback = FALLBACK_PRINTINGS.filter((p) => normalizeName(p.name) === target);
+  const seen = new Set(fromApi.map((p) => `${p.setCode}-${p.number}`));
+  const merged = [...fromApi];
+  for (const p of fromFallback) {
+    if (!seen.has(`${p.setCode}-${p.number}`)) merged.push(p);
+  }
+  return merged;
 }

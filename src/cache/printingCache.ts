@@ -28,7 +28,7 @@ const defaultStore: KVStore = { get, set, del };
 export function createPrintingCache(store: KVStore = defaultStore, opts: CacheOptions = { ttlMs: 30 * 24 * 60 * 60 * 1000 }) {
   const now = opts.now ?? (() => Date.now());
   const ttlMs = opts.ttlMs;
-  const cacheKey = (name: string) => `printings:v3:${normalizeName(name)}`;
+  const cacheKey = (name: string) => `printings:v4:${normalizeName(name)}`;
 
   return {
     async get(name: string): Promise<CacheResult | null> {
