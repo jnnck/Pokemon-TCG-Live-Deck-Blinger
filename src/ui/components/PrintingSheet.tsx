@@ -20,8 +20,14 @@ export default function PrintingSheet({ cardName, printings, selectedId, onSelec
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-10 flex items-end bg-black/40">
-      <div className="w-full max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white p-4">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-10 flex items-end justify-center bg-black/40 sm:items-center"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white p-4 sm:rounded-2xl"
+      >
         <header className="flex items-center justify-between pb-3">
           <h2 className="text-lg font-bold">{cardName}</h2>
           <button onClick={onClose} className="text-slate-500">Close</button>
