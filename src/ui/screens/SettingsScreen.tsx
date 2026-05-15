@@ -6,7 +6,8 @@ interface Props { onBack: () => void; }
 export default function SettingsScreen({ onBack }: Props) {
   const { prefs, updatePrefs } = useDeck();
 
-  const lockEntries = Object.entries(prefs.locks);
+  const modeLocks = prefs.locks[prefs.mode] ?? {};
+  const lockEntries = Object.entries(modeLocks);
 
   return (
     <section className="space-y-6">
@@ -43,7 +44,8 @@ export default function SettingsScreen({ onBack }: Props) {
       </section>
 
       <section className="space-y-2">
-        <h2 className="font-semibold">Locked card choices</h2>
+        <h2 className="font-semibold">Locked card choices ({prefs.mode === "simplify" ? "Simplify" : "Bling"})</h2>
+        <p className="text-xs text-slate-500">Locks are stored separately per mode. Switch mode on the paste screen to manage the other set.</p>
         {lockEntries.length === 0 && <p className="text-sm text-slate-500">No locks yet.</p>}
         <ul className="space-y-1">
           {lockEntries.map(([key, choice]) => (
@@ -51,9 +53,9 @@ export default function SettingsScreen({ onBack }: Props) {
               <span>{key} → {choice.setCode} {choice.number}</span>
               <button
                 onClick={() => {
-                  const locks = { ...prefs.locks };
-                  delete locks[key];
-                  updatePrefs({ ...prefs, locks });
+                  const next = { ...modeLocks };
+                  delete next[key];
+                  updatePrefs({ ...prefs, locks: { ...prefs.locks, [prefs.mode]: next } });
                 }}
                 className="text-red-600"
               >
@@ -64,10 +66,10 @@ export default function SettingsScreen({ onBack }: Props) {
         </ul>
         {lockEntries.length > 0 && (
           <button
-            onClick={() => updatePrefs({ ...prefs, locks: {} })}
+            onClick={() => updatePrefs({ ...prefs, locks: { ...prefs.locks, [prefs.mode]: {} } })}
             className="w-full rounded-lg border border-red-300 px-3 py-2 text-sm text-red-700"
           >
-            Clear all locks
+            Clear all {prefs.mode === "simplify" ? "Simplify" : "Bling"} locks
           </button>
         )}
       </section>

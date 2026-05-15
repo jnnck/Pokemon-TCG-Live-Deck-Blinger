@@ -38,7 +38,7 @@ export function pickUpgrade(
 ): Printing | null {
   if (printings.length === 0) return null;
   const key = normalizeName(cardName);
-  const lock = prefs.locks[key];
+  const lock = prefs.locks[prefs.mode]?.[key];
   if (lock) {
     const match = printings.find((p) => p.setCode === lock.setCode && p.number === lock.number);
     if (match) return match;

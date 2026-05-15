@@ -27,7 +27,7 @@ const prefs: Preferences = {
   rarityRanking: DEFAULT_RARITY_RANKING,
   tiebreaker: "newest",
   mode: "bling",
-  locks: {},
+  locks: { bling: {}, simplify: {} },
 };
 
 describe("rankPrintings", () => {
@@ -107,6 +107,51 @@ describe("rankPrintings", () => {
     expect(ranked[0].setCode).toBe("OK");
     expect(ranked[ranked.length - 1].setCode).toBe("WEIRD");
   });
+
+  it("knows about Double Rare (SV-era 'ex' base) — beats Ultra Rare when simplifying", () => {
+    const printings = [
+      p({ rarity: "Ultra Rare", setCode: "FULL_ART" }),
+      p({ rarity: "Double Rare", setCode: "PLAIN_EX" }),
+    ];
+    const simplify: Preferences = { ...prefs, mode: "simplify" };
+    expect(rankPrintings(printings, simplify)[0].setCode).toBe("PLAIN_EX");
+  });
+});
+
+describe("pickUpgrade — per-mode locks", () => {
+  it("uses the Bling lock when mode is bling, ignores the Simplify lock", () => {
+    const printings = [
+      p({ rarity: "Special Illustration Rare", setCode: "SIR", number: "100" }),
+      p({ rarity: "Common", setCode: "PLAIN", number: "5" }),
+      p({ rarity: "Rare Holo", setCode: "MID", number: "50" }),
+    ];
+    const blingPrefs: Preferences = {
+      ...prefs,
+      mode: "bling",
+      locks: {
+        bling: { "boss's orders": { setCode: "MID", number: "50" } },
+        simplify: { "boss's orders": { setCode: "PLAIN", number: "5" } },
+      },
+    };
+    expect(pickUpgrade("Boss's Orders", printings, blingPrefs)?.setCode).toBe("MID");
+  });
+
+  it("uses the Simplify lock when mode is simplify, ignores the Bling lock", () => {
+    const printings = [
+      p({ rarity: "Special Illustration Rare", setCode: "SIR", number: "100" }),
+      p({ rarity: "Common", setCode: "PLAIN", number: "5" }),
+      p({ rarity: "Rare Holo", setCode: "MID", number: "50" }),
+    ];
+    const simplifyPrefs: Preferences = {
+      ...prefs,
+      mode: "simplify",
+      locks: {
+        bling: { "boss's orders": { setCode: "SIR", number: "100" } },
+        simplify: { "boss's orders": { setCode: "MID", number: "50" } },
+      },
+    };
+    expect(pickUpgrade("Boss's Orders", printings, simplifyPrefs)?.setCode).toBe("MID");
+  });
 });
 
 describe("pickUpgrade", () => {
@@ -117,7 +162,7 @@ describe("pickUpgrade", () => {
     ];
     const locked: Preferences = {
       ...prefs,
-      locks: { "boss's orders": { setCode: "LOCK", number: "9" } },
+      locks: { bling: { "boss's orders": { setCode: "LOCK", number: "9" } }, simplify: {} },
     };
     expect(pickUpgrade("Boss's Orders", printings, locked)?.setCode).toBe("LOCK");
   });

@@ -52,7 +52,7 @@ export interface Preferences {
   rarityRanking: RarityTier[];
   tiebreaker: "newest" | "oldest";
   mode: Mode;
-  locks: LockMap;
+  locks: Record<Mode, LockMap>;
 }
 
 export const DEFAULT_RARITY_RANKING: RarityTier[] = [
@@ -60,7 +60,7 @@ export const DEFAULT_RARITY_RANKING: RarityTier[] = [
   ["Hyper Rare", "Rare Secret"],
   ["Ultra Rare", "Rare Ultra"],
   ["Illustration Rare"],
-  ["Rare Holo"],
+  ["Double Rare", "Rare Holo"],
   ["Rare"],
   ["Uncommon"],
   ["Common"],
@@ -70,5 +70,5 @@ export const DEFAULT_PREFERENCES: Preferences = {
   rarityRanking: DEFAULT_RARITY_RANKING,
   tiebreaker: "newest",
   mode: "bling",
-  locks: {},
+  locks: { bling: {}, simplify: {} },
 };

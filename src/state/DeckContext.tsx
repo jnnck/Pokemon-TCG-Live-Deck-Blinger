@@ -107,7 +107,8 @@ export function DeckProvider({ children }: { children: ReactNode }) {
   const selectPrinting = useCallback((cardName: string, printing: Printing) => {
     dispatch({ type: "selection/set", name: cardName, choice: { setCode: printing.setCode, number: printing.number } });
     setPrefs((p) => {
-      const next: Preferences = { ...p, locks: { ...p.locks, [normalizeName(cardName)]: { setCode: printing.setCode, number: printing.number } } };
+      const modeLocks = { ...p.locks[p.mode], [normalizeName(cardName)]: { setCode: printing.setCode, number: printing.number } };
+      const next: Preferences = { ...p, locks: { ...p.locks, [p.mode]: modeLocks } };
       savePreferences(next);
       return next;
     });
@@ -116,9 +117,9 @@ export function DeckProvider({ children }: { children: ReactNode }) {
   const clearSelection = useCallback((cardName: string) => {
     dispatch({ type: "selection/clear", name: cardName });
     setPrefs((p) => {
-      const locks = { ...p.locks };
-      delete locks[normalizeName(cardName)];
-      const next: Preferences = { ...p, locks };
+      const modeLocks = { ...p.locks[p.mode] };
+      delete modeLocks[normalizeName(cardName)];
+      const next: Preferences = { ...p, locks: { ...p.locks, [p.mode]: modeLocks } };
       savePreferences(next);
       return next;
     });
