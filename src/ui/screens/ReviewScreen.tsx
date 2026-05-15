@@ -30,39 +30,41 @@ export default function ReviewScreen({ onBack, onExport }: Props) {
   const total = deck.entries.reduce((sum, e) => sum + e.count, 0);
 
   return (
-    <section className="space-y-4">
-      <header className="flex items-center justify-between">
-        <button onClick={onBack} className="text-sm text-slate-500 underline">Back</button>
-        <h1 className="text-xl font-bold">Review</h1>
-        <span className="text-sm text-slate-500">{total} cards</span>
-      </header>
+    <>
+      <section className="space-y-4">
+        <header className="flex items-center justify-between">
+          <button onClick={onBack} className="text-sm text-slate-500 underline">Back</button>
+          <h1 className="text-xl font-bold">Review</h1>
+          <span className="text-sm text-slate-500">{total} cards</span>
+        </header>
 
-      {deck.warnings.length > 0 && (
-        <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-          {deck.warnings.map((w, i) => <li key={i}>{w}</li>)}
+        {deck.warnings.length > 0 && (
+          <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+            {deck.warnings.map((w, i) => <li key={i}>{w}</li>)}
+          </ul>
+        )}
+
+        <ul className="space-y-2">
+          {uniqueEntries.map((entry) => {
+            const key = normalizeName(entry.name);
+            const printings = state.printings[key];
+            const error = state.errors[key] ?? null;
+            const loaded = printings !== undefined;
+            return (
+              <li key={key}>
+                <CardRow
+                  entry={entry}
+                  upgraded={resolvedPrinting(entry)}
+                  loading={!loaded && !error}
+                  notFound={loaded && printings.length === 0}
+                  error={error}
+                  onClick={() => setOpenCard(entry.name)}
+                />
+              </li>
+            );
+          })}
         </ul>
-      )}
-
-      <ul className="space-y-2">
-        {uniqueEntries.map((entry) => {
-          const key = normalizeName(entry.name);
-          const printings = state.printings[key];
-          const error = state.errors[key] ?? null;
-          const loaded = printings !== undefined;
-          return (
-            <li key={key}>
-              <CardRow
-                entry={entry}
-                upgraded={resolvedPrinting(entry)}
-                loading={!loaded && !error}
-                notFound={loaded && printings.length === 0}
-                error={error}
-                onClick={() => setOpenCard(entry.name)}
-              />
-            </li>
-          );
-        })}
-      </ul>
+      </section>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-slate-200 bg-white p-3">
         <button onClick={onExport} className="mx-auto block w-full max-w-md rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white">
@@ -86,6 +88,6 @@ export default function ReviewScreen({ onBack, onExport }: Props) {
           />
         );
       })()}
-    </section>
+    </>
   );
 }
