@@ -74,12 +74,12 @@ describe("rankPrintings", () => {
     expect(ranked.map((x) => x.setCode)).toEqual(["NEW", "OLD"]);
   });
 
-  it("ranks Hyper Rare / Rare Secret above Special Illustration Rare by default", () => {
+  it("ranks Special Illustration Rare above Hyper Rare / Rare Secret by default", () => {
     const printings = [
       p({ rarity: "Special Illustration Rare", setCode: "SIR" }),
       p({ rarity: "Rare Secret", setCode: "GOLD" }),
     ];
-    expect(rankPrintings(printings, prefs)[0].setCode).toBe("GOLD");
+    expect(rankPrintings(printings, prefs)[0].setCode).toBe("SIR");
   });
 });
 

@@ -1,3 +1,4 @@
+import { normalizeName } from "../upgrade/rankPrintings";
 import type { Printing } from "../types";
 
 interface ApiAttack {
@@ -80,5 +81,8 @@ export async function fetchPrintingsByName(
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`pokemontcg.io ${res.status}`);
   const body = (await res.json()) as ApiResponse;
-  return body.data.map(toPrinting).filter((p): p is Printing => p !== null);
+  const target = normalizeName(name);
+  return body.data
+    .map(toPrinting)
+    .filter((p): p is Printing => p !== null && normalizeName(p.name) === target);
 }

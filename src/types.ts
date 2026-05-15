@@ -54,9 +54,9 @@ export interface Preferences {
 }
 
 export const DEFAULT_RARITY_RANKING: RarityTier[] = [
+  ["Special Illustration Rare"],
   ["Hyper Rare", "Rare Secret"],
   ["Ultra Rare", "Rare Ultra"],
-  ["Special Illustration Rare"],
   ["Illustration Rare"],
   ["Rare Holo"],
   ["Rare"],
